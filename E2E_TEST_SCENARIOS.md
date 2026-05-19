@@ -18,9 +18,9 @@ The following must exist before running loan scenarios. Create via UI in this or
 
 | # | What | Where | Key Values |
 |---|------|-------|------------|
-| 1 | Payment Methods | `#/configuration` → Payment Methods | Cash, Bank Transfer, Mobile Money |
-| 2 | Branch | `#/configuration` → Branches | Nairobi Branch |
-| 3 | Roles | `#/configuration` → Roles | Loan Officer (with loan permissions) |
+| 1 | Payment Methods | `#/configuration` → Payment Methods → **Scenario 1** | Cash, Bank Transfer, Mobile Money |
+| 2 | Branch | `#/configuration` → Branches → **Scenario 3** | Nairobi Branch |
+| 3 | Roles | `#/configuration` → Roles → **Scenario 2** | Loan Officer (with loan permissions) |
 | 4 | Users | `#/configuration` → Users | `john.doe` — role: Loan Officer, branch: Nairobi Branch |
 | 5 | Loan Product | `#/configuration` → Loan Products | Standard Micro Loan (SML-001), 500–50000, 12–24%, 3–60 months, Annuity |
 | 6 | Credit Committee | `#/configuration` → Credit Committee | Rule: Limit 100000, Roles: Loan Officer |
@@ -28,7 +28,77 @@ The following must exist before running loan scenarios. Create via UI in this or
 
 ---
 
-## Scenario 1 — Create Loan Product
+## Scenario 1 — Create Payment Methods
+
+**Route:** `#/configuration` → Payment Methods → Create
+
+### Steps
+
+1. Navigate to `http://localhost:4200/#/configuration`
+2. Click **Payment Methods** in the configuration grid
+3. Click **Create** (top-right green button)
+4. Fill:
+   - **Name:** `Cash`
+5. Click **Save**
+6. Click **Create** again
+7. Fill:
+   - **Name:** `Bank Transfer`
+8. Click **Save**
+9. Click **Create** again
+10. Fill:
+    - **Name:** `Mobile Money`
+11. Click **Save**
+
+**Expected:**
+- All three rows appear in the Payment Methods list: `Cash`, `Bank Transfer`, `Mobile Money`
+- These options are available in the **Payment method** dropdown during loan repayment
+
+---
+
+## Scenario 2 — Create Role (Loan Officer)
+
+**Route:** `#/configuration` → Roles → Create
+
+> The Loan Officer role must exist before creating user john.doe and before configuring the Credit Committee rule.
+
+### Steps
+
+1. Navigate to `http://localhost:4200/#/configuration`
+2. Click **Roles** in the configuration grid
+3. Click **Create**
+4. Fill:
+   - **Name:** `Loan Officer`
+   - Enable permissions: Profiles (read/write), Loan Applications (read/write), Loans (read/write)
+5. Click **Save**
+
+**Expected:**
+- `Loan Officer` row appears in the Roles list
+- Role is available in the Role dropdown when creating users
+- Role is available when adding Credit Committee rules
+
+---
+
+## Scenario 3 — Create Branch
+
+**Route:** `#/configuration` → Branches → Create
+
+### Steps
+
+1. Navigate to `http://localhost:4200/#/configuration`
+2. Click **Branches** in the configuration grid
+3. Click **Create** (top-right green button)
+4. Fill the form:
+   - **Name:** `Nairobi Branch`
+5. Click **Save**
+
+**Expected:**
+- Maker/Checker auto-approves (Administrator has CHECKER permissions)
+- Redirects to the Branches list
+- `Nairobi Branch` row appears in the table
+
+---
+
+## Scenario 4 — Create Loan Product
 
 **Route:** `#/configuration` → Loan Products → Create
 
@@ -38,19 +108,20 @@ The following must exist before running loan scenarios. Create via UI in this or
 2. Click **Loan Products** in the configuration grid
 3. Click **Create** (top-right green button)
 4. Fill the form:
+   - **Active Product:** `Active` _(status dropdown — keep default ACTIVE)_
    - **Name:** `Standard Micro Loan`
    - **Code:** `SML-001`
-   - **Currency:** `USD`
-   - **Min Amount:** `500`
-   - **Max Amount:** `50000`
-   - **Min Maturity:** `3`
-   - **Max Maturity:** `60`
-   - **Repayment type:** `Annuity`
-   - **Interest Rate (min):** `12`
-   - **Interest Rate (max):** `24`
-   - **Interest Rate (default):** `18`
-   - **Grace Period Principal:** `0`
-   - **Grace Period Interest:** `0`
+   - **Availability:** tick **Person Profile** checkbox _(also tick Company Profile if needed)_
+   - **Schedule Type:** `Annuity` _(lookup — select from list; Annuity = equal instalments)_
+   - **Schedule Based Type:** `BY_INSTALLMENT` _(required lookup — drives whether maturity is # of instalments or a date)_
+   - **Currency:** `USD` _(lookup — search and select)_
+   - **Interest Rate Min:** `12` · **Interest Rate Max:** `24`
+   - **Amount Min:** `500` · **Amount Max:** `50000`
+   - **Number of Instalments Min:** `3` · **Number of Instalments Max:** `60` _(visible when Schedule Based Type = BY\_INSTALLMENT)_
+   - **Grace Period Min:** `0` · **Grace Period Max:** `0`
+   - **Has Payees:** leave unchecked
+   - **Penalties:** leave empty
+   - **Entry Fees:** leave empty
 5. Click **Save**
 
 **Expected:**
@@ -60,7 +131,7 @@ The following must exist before running loan scenarios. Create via UI in this or
 
 ---
 
-## Scenario 2 — Create User john.doe (Loan Officer)
+## Scenario 5 — Create User john.doe (Loan Officer)
 
 **Route:** `#/configuration` → Users → Create
 
@@ -72,13 +143,16 @@ The following must exist before running loan scenarios. Create via UI in this or
 2. Click **Users**
 3. Click **Create**
 4. Fill:
+   - **Active User:** `Active` _(status dropdown — keep default ACTIVE)_
    - **First name:** `John`
    - **Last name:** `Doe`
    - **Username:** `john.doe`
-   - **Email:** `john.doe@opencbs.com`
-   - **Role:** `Loan Officer`
-   - **Branch:** `Nairobi Branch`
+   - **Branch:** `Nairobi Branch` _(lookup — search and select)_
    - **Password:** `admin`
+   - **Confirm Password:** `admin`
+   - **Role:** `Loan Officer` _(select dropdown)_
+   - **Email:** `john.doe@opencbs.com`
+   - **Phone Number:** `+254 700 000100`
 5. Click **Save**
 
 **Expected:**
@@ -101,7 +175,7 @@ If john.doe already exists but the password is unknown:
 
 ---
 
-## Scenario 3 — Configure Credit Committee Rule
+## Scenario 6 — Configure Credit Committee Rule
 
 **Route:** `#/configuration` → Credit Committee
 
@@ -123,7 +197,7 @@ If john.doe already exists but the password is unknown:
 
 ---
 
-## Scenario 4 — Create Person Profile
+## Scenario 7 — Create Person Profile
 
 **Route:** `#/profiles` → Create → Person
 
@@ -148,7 +222,7 @@ If john.doe already exists but the password is unknown:
 
 ---
 
-## Scenario 5 — Create Loan Application
+## Scenario 8 — Create Loan Application
 
 **Route:** `#/profiles/people/1/info` → Loan Applications → Create
 
@@ -158,14 +232,19 @@ If john.doe already exists but the password is unknown:
 2. Click **Loan applications** in the left sidebar tab list
 3. Click **Create** (top-right green button)
 4. Fill the application form:
-   - **Loan product:** click the dropdown → select `Standard Micro Loan`
-   - **Requested amount:** `10000`
-   - **Interest rate:** `18`
-   - **Number of installments:** `12`
-   - **Disbursement date:** `2026-05-19`
-   - **First repayment date:** `2026-06-19`
-   - **Loan officer:** `Administrator` (or `John Doe`)
-   - **Branch:** `Nairobi Branch`
+   - **Profile:** `Alice Wanjiru` _(pre-filled, read-only)_
+   - **Credit Line:** leave blank
+   - **Loan product:** click the dropdown → search → select `Standard Micro Loan`
+   - **Currency:** `USD` _(lookup — auto-populated from product; confirm it shows USD)_
+   - **Schedule Type:** `Annuity` _(dropdown — auto-filled from product; keep as-is)_
+   - **Schedule Based Type:** `BY_INSTALLMENT` _(read-only, derived from product)_
+   - **Net Amount:** `10000`
+   - **Interest Rate:** `18` _(within product range 12–24)_
+   - **Grace Period:** `0`
+   - **Number of Instalments:** `12` _(within product range 3–60)_
+   - **Disbursement Date:** `2026-05-19`
+   - **Preferred Repayment Date:** `2026-06-19`
+   - **Loan Officer:** `Administrator` _(lookup — search and select)_
 5. Click **Save**
 
 **Expected:**
@@ -177,7 +256,7 @@ If john.doe already exists but the password is unknown:
 
 ---
 
-## Scenario 6 — Submit Loan Application
+## Scenario 9 — Submit Loan Application
 
 **Route:** `#/loan-applications/{id}/info`
 
@@ -199,7 +278,7 @@ If john.doe already exists but the password is unknown:
 
 ---
 
-## Scenario 7 — Credit Committee Vote (Approve)
+## Scenario 10 — Credit Committee Vote (Approve)
 
 **Route:** `#/loan-applications/{id}/credit-committee`
 
@@ -207,7 +286,7 @@ If john.doe already exists but the password is unknown:
 
 ### Steps
 
-#### 7a — Switch to john.doe account
+#### 10a — Switch to john.doe account
 
 1. Click the **Username** button in the top-right corner of the nav bar
 2. Click **Logout** — redirects to `#/login`
@@ -217,7 +296,7 @@ If john.doe already exists but the password is unknown:
 4. Click **Login**
 5. Dashboard loads — top-right confirms you are logged in as John Doe
 
-#### 7b — Navigate to the loan application
+#### 10b — Navigate to the loan application
 
 1. Click **Profiles** in the top navigation bar
 2. Click on **Alice Wanjiru** in the profiles list
@@ -225,7 +304,7 @@ If john.doe already exists but the password is unknown:
 4. Click on the application row (code: `DEFAULT BRANCH/26/SML-001/00001/00001`)
 5. On the application page, click the **Credit committee** tab (left sidebar)
 
-#### 7c — Cast the Approve vote
+#### 10c — Cast the Approve vote
 
 1. The credit committee table shows one row:
    - **Role:** `LOAN OFFICER`
@@ -245,7 +324,7 @@ If john.doe already exists but the password is unknown:
 
 ---
 
-## Scenario 8 — Disburse Loan
+## Scenario 11 — Disburse Loan
 
 **Route:** `#/loan-applications/{id}/credit-committee` (status: Approved)
 
@@ -267,7 +346,7 @@ If john.doe already exists but the password is unknown:
 
 ---
 
-## Scenario 9 — Verify Active Loan
+## Scenario 12 — Verify Active Loan
 
 **Route:** `#/profiles/people/1/loans`
 
@@ -293,7 +372,7 @@ If john.doe already exists but the password is unknown:
 
 ---
 
-## Scenario 10 — Make a Repayment
+## Scenario 13 — Make a Repayment
 
 **Route:** `#/loans/{id}/person/operations` → Repayment
 
@@ -333,7 +412,7 @@ If john.doe already exists but the password is unknown:
 
 ---
 
-## Scenario 11 — Verify Repayment in Schedule
+## Scenario 14 — Verify Repayment in Schedule
 
 **Route:** `#/loans/{id}/person/schedule`
 
@@ -348,7 +427,7 @@ If john.doe already exists but the password is unknown:
 
 ---
 
-## Scenario 12 — Verify Loan Events
+## Scenario 15 — Verify Loan Events
 
 **Route:** `#/loans/{id}/person/events`
 
@@ -362,7 +441,7 @@ If john.doe already exists but the password is unknown:
 
 ---
 
-## Scenario 13 — Maker/Checker Queue Verification
+## Scenario 16 — Maker/Checker Queue Verification
 
 **Route:** `#/requests`
 
@@ -395,6 +474,21 @@ If john.doe already exists but the password is unknown:
 
 ```
 LOGIN  →  Administrator / admin
+    │
+    ▼
+[#/configuration → Payment Methods]
+    Create:  Cash
+    Create:  Bank Transfer
+    Create:  Mobile Money
+    │
+    ▼
+[#/configuration → Roles]
+    Create:  Loan Officer  (Profiles + Loan Applications + Loans permissions)
+    │
+    ▼
+[#/configuration → Branches]
+    Create:  Nairobi Branch
+    Click Save  →  auto-approved, appears in Branches list
     │
     ▼
 [#/configuration → Loan Products]
