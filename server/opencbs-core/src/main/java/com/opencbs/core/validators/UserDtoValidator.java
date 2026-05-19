@@ -42,7 +42,7 @@ public class UserDtoValidator {
     }
 
     public void validateOnCreate(UserDto userDto) {
-        this.validateWithRegex(userDto.getUsername(), "[A-Za-z0-9]+", 50, UserFieldType.USER_NAME);
+        this.validateWithRegex(userDto.getUsername(), "[A-Za-z0-9._]+", 50, UserFieldType.USER_NAME);
         Assert.isTrue(!this.userRepository.findByUsername(userDto.getUsername()).isPresent(), "This username is taken.");
         this.validateFields(userDto.getFirstName(), 250, UserFieldType.FIRST_NAME);
         this.validateFields(userDto.getLastName(), 250, UserFieldType.LAST_NAME);
@@ -55,7 +55,7 @@ public class UserDtoValidator {
 
     private void validateRole(UserDto userDto) {
         Assert.isTrue(userDto.getRoleId() != 0, "Role is required.");
-        Role role = this.roleRepository.getOne(userDto.getRoleId());
+        Role role = this.roleRepository.findOne(userDto.getRoleId());
         Assert.notNull(role, "Role is not exist.");
         Assert.isTrue(!role.getIsSystem(), "Role can't be system." );
         Assert.notNull(userDto.getBranchId(), "Branch is required.");

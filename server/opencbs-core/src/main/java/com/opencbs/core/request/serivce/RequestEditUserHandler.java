@@ -40,8 +40,15 @@ public class RequestEditUserHandler implements RequestHandler {
 
     @Override
     public Long approveRequest(Request request) throws IOException {
-        User user = this.userService.update(this.createEntity(request));
-        return user.getId();
+        UserDto dto = this.mapper.readValue(request.getContent().get("value").toString(), UserDto.class);
+        User entity = this.createEntity(request);
+        User saved;
+        if (dto.getPassword() != null && !dto.getPassword().trim().isEmpty()) {
+            saved = this.userService.save(entity);
+        } else {
+            saved = this.userService.update(entity);
+        }
+        return saved.getId();
     }
 
     @Override

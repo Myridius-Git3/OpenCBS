@@ -158,12 +158,19 @@ export class UserEditComponent implements OnInit, OnDestroy, AfterViewInit {
       idNumber: new FormControl('', Validators.required),
       position: new FormControl('', Validators.required),
       statusType: new FormControl(''),
-      id: new FormControl('')
+      id: new FormControl(''),
+      password: new FormControl('')
     });
     this.userEditForm.controls['username'].disable({emitEvent: false, onlySelf: true});
+    if (this.user && this.user.success && this.user.loaded) {
+      this.populateFields(this.user);
+    }
   }
 
   populateFields(userData) {
+    if (!this.userEditForm) {
+      return;
+    }
     for (const key in userData) {
       if (this.userEditForm.controls.hasOwnProperty(key) && userData.hasOwnProperty(key)) {
         this.userEditForm.controls[key].setValue(userData[key], {emitEvent: false});
@@ -195,7 +202,7 @@ export class UserEditComponent implements OnInit, OnDestroy, AfterViewInit {
   ngAfterViewInit() {
     this.formSub = this.userEditForm.valueChanges.subscribe(data => {
       if (data['firstName'] && data['lastName'] && data['roleId']) {
-        this.formChanged = this.checkFormChanges(data);
+        this.formChanged = this.checkFormChanges(data) || (data['password'] && data['password'].length > 0);
       }
     });
   }

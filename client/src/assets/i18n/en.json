@@ -555,6 +555,7 @@
   "RECALCULATE": "Recalculate",
   "ID_NUMBER": "Id number",
   "POSITION": "Position",
+  "NEW_PASSWORD": "New Password (leave blank to keep current)",
   "SYSTEM_SETTINGS": "System settings",
   "PASSWORD_SETTINGS": "Password settings",
   "PASSWORD_SETTINGS_EDIT": "Password settings edit",

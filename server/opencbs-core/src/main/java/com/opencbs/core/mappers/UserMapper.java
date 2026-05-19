@@ -65,6 +65,9 @@ public class UserMapper {
         user.setAddress(userDto.getAddress().trim());
         user.setPosition(userDto.getPosition().trim());
         user.setStatusType(userDto.getStatusType());
+        if (userDto.getPassword() != null && !userDto.getPassword().trim().isEmpty()) {
+            user.setPasswordHash(userDto.getPassword().trim());
+        }
         return user;
     }
 

@@ -2,7 +2,9 @@ package com.opencbs.core.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.opencbs.core.domain.enums.StatusType;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import org.springframework.security.core.GrantedAuthority;
@@ -23,7 +25,9 @@ import java.util.Collections;
 
 import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 
-@Data
+@Getter
+@Setter
+@ToString
 @Audited
 @Entity
 @Table(name = "users")
