@@ -24,10 +24,9 @@ dist/
 nbdist/
 .nb-gradle/
 
-application.properties
+
 
 /attachments
 /logs
 .DS_Store
 
-**/application-*.properties
