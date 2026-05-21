@@ -176,6 +176,7 @@ public class AccountService extends BaseHistoryService<AccountRepository> implem
         return new PageImpl<>(accounts);
     }
 
+    @Transactional(readOnly = true)
     public Page<Account> search(AccountRequest request, Pageable pageable) throws ResourceNotFoundException {
         List<AccountType> accountTypes = request.getAccountTypes() != null
                 ? request.getAccountTypes()

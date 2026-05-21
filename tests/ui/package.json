@@ -1,0 +1,19 @@
+{
+  "name": "opencbs-ui-tests",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Playwright UI test framework for OpenCBS client (POM)",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:ui": "playwright test --ui",
+    "test:transfers": "playwright test tests/transfers",
+    "report": "playwright show-report",
+    "codegen": "playwright codegen http://localhost"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.0",
+    "@types/node": "^20.11.0",
+    "typescript": "^5.4.0"
+  }
+}
