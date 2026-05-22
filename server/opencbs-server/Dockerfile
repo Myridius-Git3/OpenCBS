@@ -28,10 +28,11 @@ FROM eclipse-temurin:8-jre-alpine
 WORKDIR /app
 
 COPY --from=builder /build/opencbs-server/target/*.jar app.jar
-COPY server/opencbs-server/src/main/resources/application-docker.properties application.properties
+# application-docker.properties is bundled inside the JAR; activate it via the
+# spring profile so no secrets are copied into the image layer.
 
 EXPOSE 8080
 ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", \
-            "-Dspring.config.location=file:/app/application.properties", \
+            "-Dspring.profiles.active=docker", \
             "-jar", "app.jar"]
 
