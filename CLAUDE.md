@@ -20,6 +20,7 @@ docker compose down              # Stop all services
 **Production (Ubuntu EC2)**
 ```bash
 cp .env.example .env             # Fill in all CHANGE_ME_* values before continuing
+make copy-templates              # Copy report templates to ~/opencbs_templates/templates (run once, or after template changes)
 docker compose -f docker-compose-production.yml up -d --build
 docker compose -f docker-compose-production.yml ps       # Check health
 docker compose -f docker-compose-production.yml logs -f api
