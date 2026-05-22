@@ -10,10 +10,25 @@ OpenCBS-Cloud is an open-source Core Banking System for microfinance institution
 
 ### Full-Stack (Docker)
 
+**Development**
 ```bash
 docker compose up --build        # Start all services (db, rabbitmq, api, web)
 docker compose up -d             # Start in background
 docker compose down              # Stop all services
+```
+
+**Production (Ubuntu EC2)**
+```bash
+cp .env.example .env             # Fill in all CHANGE_ME_* values before continuing
+docker compose -f docker-compose-production.yml up -d --build
+docker compose -f docker-compose-production.yml ps       # Check health
+docker compose -f docker-compose-production.yml logs -f api
+
+# Redeploy after a code change
+docker compose -f docker-compose-production.yml up -d --build
+
+# Full teardown (WARNING: destroys all volumes / data)
+docker compose -f docker-compose-production.yml down -v
 ```
 
 ### Backend (server/)
@@ -137,9 +152,34 @@ Config: single Chromium worker, 60s test timeout, traces/screenshots/video on fa
 
 ### Docker Compose Services
 
-| Service    | Image / Build         | Port  | Notes                        |
-|------------|-----------------------|-------|------------------------------|
-| db         | postgres:14-alpine    | 5432  | Volume: postgres_data        |
-| rabbitmq   | rabbitmq:3-management | 15672 | Management UI                |
-| api        | server/opencbs-server | 8080  | Depends on db, rabbitmq      |
-| web        | client/               | 80    | Nginx; depends on api        |
+**Development** (`docker-compose.yml`)
+
+| Service  | Image / Build         | Port  | Notes                              |
+|----------|-----------------------|-------|------------------------------------|
+| db       | postgres:14-alpine    | 5432  | Volume: postgres_data              |
+| rabbitmq | rabbitmq:3-management | 15672 | Management UI (guest/guest)        |
+| api      | server/opencbs-server | 8080  | Credentials via env vars           |
+| web      | client/               | 80    | Nginx; depends on api              |
+
+**Production** (`docker-compose-production.yml`)
+
+| Service  | Image / Build         | Port | Notes                                           |
+|----------|-----------------------|------|-------------------------------------------------|
+| db       | postgres:14-alpine    | —    | Not exposed to host; internal network only      |
+| rabbitmq | rabbitmq:3-alpine     | —    | No management UI; internal network only         |
+| api      | server/opencbs-server | —    | Credentials from `.env`; healthcheck on :8080   |
+| web      | client/               | 80   | Nginx + `client/default-prod.conf`              |
+
+All secrets (DB password, RabbitMQ password, JWT secret) are injected exclusively
+via environment variables sourced from `.env`. See `.env.example` for the full list.
+`POSTGRES_USER` **must** remain `postgres` — Flyway migrations hardcode
+`OWNER TO postgres` across many SQL scripts.
+
+### Spring Boot Configuration
+
+The API container uses Spring profile `docker` (activated via `-Dspring.profiles.active=docker`
+in the Dockerfile `ENTRYPOINT`). Config resolution order (highest → lowest priority):
+
+1. Environment variables (secrets, injected by Compose at runtime)
+2. `application-docker.properties` (bundled in JAR — docker hostnames: `db`, `rabbitmq`)
+3. `application.properties` (bundled in JAR — local-dev defaults)
