@@ -85,7 +85,8 @@ services:
         -Xms256m
         -Xmx${API_HEAP_MAX:-512m}
     volumes:
-      - ${HOME}/opencbs_templates:/app/templates:ro
+      # - ./server/templates:/app/templates:ro
+      - ${HOME}/opencbs_templates/templates:/app/templates:ro
       - attachments_data:/app/attachments
     expose:
       - "8080"
