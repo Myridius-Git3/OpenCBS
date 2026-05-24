@@ -1,5 +1,6 @@
 import { test } from '../../fixtures/auth.fixture';
 import { ROUTES } from '../../utils/routes';
+import { TRANSFER_ACCOUNTS } from '../../utils/transfer-accounts';
 
 test.describe('Vault to Bank', () => {
   test('happy path E2E succeeds', async ({ authedPage, vaultToBankPage }) => {
@@ -7,7 +8,7 @@ test.describe('Vault to Bank', () => {
     await vaultToBankPage.expectLoaded();
 
     await vaultToBankPage.selectVault();
-    await vaultToBankPage.selectBankAccount('');
+    await vaultToBankPage.selectBankAccount(TRANSFER_ACCOUNTS.bankAccountSearch);
     await vaultToBankPage.fillAmount('50');
     await vaultToBankPage.selectCurrency('USD');
     await vaultToBankPage.selectPersonInCharge('Admin');

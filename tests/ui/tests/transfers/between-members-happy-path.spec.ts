@@ -1,5 +1,6 @@
 import { test } from '../../fixtures/auth.fixture';
 import { ROUTES } from '../../utils/routes';
+import { TRANSFER_ACCOUNTS } from '../../utils/transfer-accounts';
 
 test.describe('Between Members', () => {
   test('happy path E2E without Auto Print succeeds', async ({
@@ -9,8 +10,8 @@ test.describe('Between Members', () => {
     await betweenMembersPage.open();
     await betweenMembersPage.expectLoaded();
 
-    await betweenMembersPage.selectSourceAccount('');
-    await betweenMembersPage.selectDestinationAccount('');
+    await betweenMembersPage.selectSourceAccount(TRANSFER_ACCOUNTS.memberSourceSearch);
+    await betweenMembersPage.selectDestinationAccount(TRANSFER_ACCOUNTS.memberDestSearch);
     await betweenMembersPage.fillAmount(10);
     await betweenMembersPage.fillDescription('Happy path E2E between-members transfer');
 

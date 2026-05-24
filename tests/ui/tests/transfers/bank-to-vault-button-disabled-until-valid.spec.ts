@@ -1,4 +1,5 @@
 import { test } from '../../fixtures/auth.fixture';
+import { TRANSFER_ACCOUNTS } from '../../utils/transfer-accounts';
 
 test.describe('Bank to Vault', () => {
   test('Transfer button stays disabled until all required fields filled', async ({
@@ -27,7 +28,7 @@ test.describe('Bank to Vault', () => {
     await bankToVaultPage.fillDescription('E2E test transfer description');
     await bankToVaultPage.expectTransferButtonDisabled();
 
-    await bankToVaultPage.selectBankAccount('');
+    await bankToVaultPage.selectBankAccount(TRANSFER_ACCOUNTS.bankAccountSearch);
     await bankToVaultPage.expectTransferButtonEnabled();
   });
 });

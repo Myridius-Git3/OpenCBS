@@ -15,8 +15,16 @@ export class BankToVaultPage extends TransferFormBasePage {
     this.bankAccountLookup = page.locator('cbs-form-lookup-control').filter({ hasText: /bank account/i }).first();
     this.vaultSelect = page.locator('cbs-form-select-control select, select[formcontrolname="vaultId"]').first();
     this.currencyReadonly = page.locator('cbs-form-readonly-control').filter({ hasText: /currency/i });
-    this.chequeNumberInput = page.locator('input[formcontrolname="chequeNumber"]');
-    this.chequePayeeInput = page.locator('input[formcontrolname="chequePayee"]');
+    // formControlName binds to the <cbs-form-input-control> host, not the inner
+    // <input>, so target the control by its field label and reach the input.
+    this.chequeNumberInput = page
+      .locator('cbs-form-input-control')
+      .filter({ hasText: /cheque number/i })
+      .locator('input');
+    this.chequePayeeInput = page
+      .locator('cbs-form-input-control')
+      .filter({ hasText: /cheque payee/i })
+      .locator('input');
     this.personInChargeLookup = page.locator('cbs-form-lookup-control').filter({ hasText: /person in charge/i }).first();
   }
 

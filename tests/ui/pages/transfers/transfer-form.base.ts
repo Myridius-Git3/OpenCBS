@@ -14,11 +14,15 @@ export abstract class TransferFormBasePage extends BasePage {
 
   constructor(page: Page) {
     super(page);
-    this.transferButton = page.locator('button.slds-button--success, button:has-text("TRANSFER")').last();
-    this.cancelButton = page.locator('a.slds-button--neutral, a:has-text("CANCEL"), button:has-text("CANCEL")').first();
-    this.confirmPopup = page.locator('cbs-confirm-popup, [role="dialog"]');
-    this.confirmYesButton = this.confirmPopup.locator('button:has-text("YES"), button.slds-button--brand').first();
-    this.confirmNoButton = this.confirmPopup.locator('button:has-text("NO"), button.slds-button--neutral').first();
+    // The page-header TRANSFER button lives inside .cbs-new-profile__submit-btn.
+    // Scope to it so we don't accidentally match the confirm-popup "Yes" button,
+    // which shares the slds-button--success class.
+    this.transferButton = page.locator('.cbs-new-profile__submit-btn button.slds-button--success');
+    this.cancelButton = page.locator('.cbs-new-profile__submit-btn a.slds-button--neutral').first();
+    this.confirmPopup = page.locator('cbs-confirm-popup');
+    this.confirmYesButton = this.confirmPopup.locator('button[type="submit"].slds-button--success').first();
+    // The "NO" control in cbs-confirm-popup is an <a>, not a <button>.
+    this.confirmNoButton = this.confirmPopup.locator('a.slds-button--neutral').first();
     this.amountInput = page.locator('cbs-form-input-control input[type="number"], input[formcontrolname="amount"]');
     this.dateInput = page.locator('cbs-form-date-control input, input[formcontrolname="date"]').first();
     this.descriptionTextarea = page.locator('cbs-form-textarea-control textarea, textarea[formcontrolname="description"]');

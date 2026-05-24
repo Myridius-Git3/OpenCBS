@@ -1,4 +1,5 @@
 import { test, expect } from '../../fixtures/auth.fixture';
+import { TRANSFER_ACCOUNTS } from '../../utils/transfer-accounts';
 
 test.describe('Between Members', () => {
   test('confirmation NO cancels and preserves form', async ({
@@ -8,8 +9,8 @@ test.describe('Between Members', () => {
     await betweenMembersPage.open();
     await betweenMembersPage.expectLoaded();
 
-    await betweenMembersPage.selectSourceAccount('');
-    await betweenMembersPage.selectDestinationAccount('');
+    await betweenMembersPage.selectSourceAccount(TRANSFER_ACCOUNTS.memberSourceSearch);
+    await betweenMembersPage.selectDestinationAccount(TRANSFER_ACCOUNTS.memberDestSearch);
     await betweenMembersPage.fillAmount(50);
     await betweenMembersPage.fillDescription('Transfer to be cancelled via NO');
 
