@@ -22,8 +22,16 @@ export default defineConfig({
   },
   projects: [
     {
+      // Browser-driven UI tests.
       name: 'chromium',
+      testMatch: 'transfers/**/*.spec.ts',
       use: { ...devices['Desktop Chrome'], headless: false },
+    },
+    {
+      // HTTP API tests (no browser launched — they only use request contexts).
+      name: 'api',
+      testMatch: 'api/**/*.spec.ts',
+      use: { baseURL: BASE_URL },
     },
   ],
 });
